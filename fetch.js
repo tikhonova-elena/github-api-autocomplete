@@ -47,11 +47,39 @@ function clearSearchInput () {
     input.value = '';
 }
 
-function fetchGithub () {
-    let text = input.value;
-    console.log(text)
+async function fetchGithub () {
+    try {
+        let text = input.value;
+        if (!text.length) {
+            return;
+        }
+        const queryString = 'q=' + encodeURIComponent(text) + '&per_page=5';
+        let response = await fetch('https://api.github.com/search/repositories?' + queryString, {
+            headers: {
+                Accept: "application/vnd.github+json",
+                //Authorization: "Bearer <YOUR-TOKEN>",
+                "X-GitHub-Api-Version": "2022-11-28"
+            }
+        });
+        let {items} = await response.json();
+        if(!Array.isArray(items)) {
+            return;
+        }
+        console.log(items)
+        items.forEach(({name, owner, stargazers_count}) => {
+            appendSearchItem (name);
+        })
+    }
+    catch (error) {
+        console.log(error);
+    }
 }
-const debouncedFetchGithub =  debounce(fetchGithub, 1000);
+
+
+
+const debouncedFetchGithub =  debounce(fetchGithub, 300);
 input.addEventListener('input', (e) => {
+    clearSearchItems ();
     debouncedFetchGithub();
 })
+
