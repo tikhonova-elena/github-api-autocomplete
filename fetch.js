@@ -2,7 +2,7 @@
 const searchItem = document.createElement("div");
 searchItem.classList.add('search-item');
 const repos = document.querySelector('.repos');
-const search = document.querySelector('.search');
+const wrapper = document.querySelector('.wrapper');
 const results = document.querySelector('.results');
 const input = document.querySelector('.input');
 
@@ -28,10 +28,13 @@ function appendReposItem (name, owner, stars) {
     repos.append(reposItem);
 }
 
-function appendSearchItem (name) {
+function appendSearchItem (name, owner, stars) {
     const resultsItem = document.createElement("div");
     resultsItem.classList.add('search-item');
     resultsItem.innerHTML = `${name}`;
+    resultsItem.dataset.name = name ?? '';
+    resultsItem.dataset.owner = owner?.login ?? '';
+    resultsItem.dataset.stars = stars ?? '';
     results.append(resultsItem);
 }
 
@@ -45,6 +48,12 @@ function clearReposItems () {
 
 function clearSearchInput () {
     input.value = '';
+}
+
+function clearAll () {
+    results.querySelectorAll('.search-item').forEach((e) => {
+        e.classList.remove('active');
+    })
 }
 
 async function fetchGithub () {
@@ -66,8 +75,9 @@ async function fetchGithub () {
             return;
         }
         console.log(items)
+        clearSearchItems();
         items.forEach(({name, owner, stargazers_count}) => {
-            appendSearchItem (name);
+            appendSearchItem (name, owner, stargazers_count);
         })
     }
     catch (error) {
@@ -75,11 +85,19 @@ async function fetchGithub () {
     }
 }
 
-
-
 const debouncedFetchGithub =  debounce(fetchGithub, 300);
 input.addEventListener('input', (e) => {
-    clearSearchItems ();
+
     debouncedFetchGithub();
 })
 
+wrapper.addEventListener('click', (e) => {
+    const { target } = e;
+    if (!target.matches('.search-item')) {
+        return;
+    }
+    clearAll();
+    target.classList.add('active');
+
+    appendReposItem(target.dataset.name, target.dataset.owner, target.dataset.stars);
+})
