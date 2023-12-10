@@ -26,7 +26,7 @@ function appendReposItem (name, owner, stars) {
     reposItem.classList.add('repos-item');
     reposItem.dataset.name = name ?? '';
     reposItem.innerHTML = `<div><p>Name: <span class="name">${name}</span></p><p>Owner: <span class="owner">${owner}</span></p><p>Stars: <span class="stars">${stars}</span></p></div><div class="close"></div>`;
-    // todo проверить, что этот элемент еще не был добавлен
+
     if (repos.querySelector(`[data-name="${name}"]`)) {
         return;
     }
