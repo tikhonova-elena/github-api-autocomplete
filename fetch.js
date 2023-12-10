@@ -24,7 +24,13 @@ function debounce(func, delay) {
 function appendReposItem (name, owner, stars) {
     const reposItem = document.createElement("div");
     reposItem.classList.add('repos-item');
+    reposItem.dataset.name = name ?? '';
     reposItem.innerHTML = `<div><p>Name: <span class="name">${name}</span></p><p>Owner: <span class="owner">${owner}</span></p><p>Stars: <span class="stars">${stars}</span></p></div><div class="close"></div>`;
+    // todo проверить, что этот элемент еще не был добавлен
+    if (repos.querySelector(`[data-name="${name}"]`)) {
+        return;
+    }
+
     repos.append(reposItem);
 }
 
@@ -77,6 +83,7 @@ async function fetchGithub () {
         console.log(items)
         clearSearchItems();
         items.forEach(({name, owner, stargazers_count}) => {
+            // console.log();
             appendSearchItem (name, owner, stargazers_count);
         })
     }
@@ -101,3 +108,13 @@ wrapper.addEventListener('click', (e) => {
 
     appendReposItem(target.dataset.name, target.dataset.owner, target.dataset.stars);
 })
+
+wrapper.addEventListener('click', (e) => {
+    const { target } = e;
+    if (!target.matches('.close')) {
+        return;
+    }
+    let elt = target.closest('.repos-item');
+    elt.remove();
+})
+
