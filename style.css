@@ -34,10 +34,6 @@ input {
     padding-left: 10px;
 }
 
-.search-item.active {
-    background: #65CDF9;
-}
-
 .results {
     padding: 0;
 }

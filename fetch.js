@@ -46,6 +46,7 @@ function appendSearchItem (name, owner, stars) {
 
 function clearSearchItems () {
     results.innerHTML = '';
+    input.value = '';
 }
 
 function clearReposItems () {
@@ -56,24 +57,11 @@ function clearSearchInput () {
     input.value = '';
 }
 
-function clearAllActive () {
-    results.querySelectorAll('.search-item').forEach((e) => {
-        e.classList.remove('active');
-    })
-
-}function clearAllSearchItem () {
-    results.querySelectorAll('.search-item').forEach((e) => {
-        e.remove();
-    })
-}
-
-
-
 async function fetchGithub () {
     try {
         let text = input.value.trim();
         if (!text.length) {
-            clearAllSearchItem();
+            clearSearchItems();
             return;
         }
         const queryString = 'q=' + encodeURIComponent(text) + '&per_page=5';
@@ -92,7 +80,6 @@ async function fetchGithub () {
         }
         clearSearchItems();
         items.forEach(({name, owner, stargazers_count}) => {
-            // console.log();
             appendSearchItem (name, owner, stargazers_count);
         })
     }
@@ -112,11 +99,10 @@ wrapper.addEventListener('click', (e) => {
     if (!target.matches('.search-item')) {
         return;
     }
-    clearAllActive();
+    clearSearchItems();
     target.classList.add('active');
 
     appendReposItem(target.dataset.name, target.dataset.owner, target.dataset.stars);
-    input.value = '';
 })
 
 wrapper.addEventListener('click', (e) => {
