@@ -65,7 +65,6 @@ function clearAllActive () {
     results.querySelectorAll('.search-item').forEach((e) => {
         e.remove();
     })
-    input.value = '';
 }
 
 
@@ -117,7 +116,7 @@ wrapper.addEventListener('click', (e) => {
     target.classList.add('active');
 
     appendReposItem(target.dataset.name, target.dataset.owner, target.dataset.stars);
-    clearAllSearchItem();
+    input.value = '';
 })
 
 wrapper.addEventListener('click', (e) => {
